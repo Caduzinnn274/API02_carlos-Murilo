@@ -66,7 +66,27 @@ app.get('/tasks/:id',(req,res)=>{
 
 
 
-app.put('/tasks/:id/status/:status',)
+app.put('/tasks/:id/status/:status',(req,res)=>{
+    const id = req.params.id;
+    const status = req.params.status;
+    connection.query('UPDATE tasks SET status=? WHERE id=?',[status,id],(err,rows) =>{
+        if(!err)
+        { 
+            if(rows.affectedRows > 0)
+            {
+                res.json(functions.response('Sucesso', 'Sucesso na alteração de status'.rows.affectedRows, null));
+            }
+            else
+            {
+                res.json(functions.response('Atenção', 'Task não encontrada',0, null));
+            }
+        }
+        else
+        {
+            res.json(functions.response('Erro', err.message,0,null));
+        }
+    })
+})
 
 app.use((req,res)=>{
     res.json(functions.response('atenção', 'Rota não encontrada', 0, null))
